@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation'
 import Login from '../screens/login'
 import Home from '../screens/home'
 import Map from '../screens/map'
+import Chat from '../screens/chat'
 
 export default StackNavigator(
   {
@@ -19,6 +20,12 @@ export default StackNavigator(
           screen: Map,
           navigationOptions: {
             title: 'User Location',
+          },
+        },
+        Chat: {
+          screen: Chat,
+          navigationOptions: {
+            title: 'Chat',
           },
         },
       }),

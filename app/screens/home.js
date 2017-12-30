@@ -72,6 +72,9 @@ class Home extends Component {
       titleStyle={{ fontSize: 18 }}
       subtitle={item.email}
       subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
+      onPress={() => {
+        this.props.navigation.navigate('Chat', { user: item })
+      }}
       rightIcon={{ name: 'map' }}
       onPressRightIcon={() => {
         this.props.navigation.navigate('Map', { user: item })
