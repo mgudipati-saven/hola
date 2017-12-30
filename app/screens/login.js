@@ -44,7 +44,7 @@ class Login extends Component {
           const user = snap.val()
           if (user != null) {
             this.firebaseRef.child(auth.uid).off('value')
-            this.goHome(user)
+            this.goMain(user)
           }
         })
       } else {
@@ -54,9 +54,9 @@ class Login extends Component {
     })
   }
 
-  goHome = (user) => {
+  goMain = (user) => {
     this.props.dispatch(setUser(user))
-    this.props.navigation.navigate('Home')
+    this.props.navigation.navigate('Main')
   }
 
   cancelAuth = () => {

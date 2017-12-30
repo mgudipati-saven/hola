@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   },
   profile: {
     alignItems: 'center',
+    marginTop: 10,
   },
   thumbnail: {
     width: size,
@@ -41,7 +42,7 @@ class Profile extends Component {
       <SafeAreaView style={styles.container}>
         <View style={styles.profile}>
           <Avatar xlarge rounded source={{ uri: picture }} />
-          <Text style={{ fontSize: 20 }}>{name}</Text>
+          <Text style={{ fontSize: 20, padding: 10 }}>{name}</Text>
         </View>
       </SafeAreaView>
     )

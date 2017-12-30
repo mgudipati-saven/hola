@@ -10,11 +10,18 @@ export default StackNavigator(
     Login: {
       screen: Login,
     },
-    Home: {
-      screen: Home,
-    },
-    Map: {
-      screen: Map,
+    Main: {
+      screen: StackNavigator({
+        Home: {
+          screen: Home,
+        },
+        Map: {
+          screen: Map,
+          navigationOptions: {
+            title: 'User Location',
+          },
+        },
+      }),
     },
   },
   {

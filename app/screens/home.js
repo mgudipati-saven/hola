@@ -65,15 +65,15 @@ class Home extends Component {
   renderItem = ({ item }) => (
     <ListItem
       key={item.id}
+      containerStyle={{ borderBottomWidth: 0 }}
       roundAvatar
-      hideChevron
       avatar={{ uri: item.picture }}
       title={item.name}
       titleStyle={{ fontSize: 18 }}
       subtitle={item.email}
       subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
-      containerStyle={{ borderBottomWidth: 0 }}
-      onPress={() => {
+      rightIcon={{ name: 'map' }}
+      onPressRightIcon={() => {
         this.props.navigation.navigate('Map', { user: item })
       }}
     />
@@ -98,6 +98,9 @@ class Home extends Component {
       <SafeAreaView>
         <Swiper>
           <View style={styles.screen}>
+            <Profile />
+          </View>
+          <View style={styles.screen}>
             <FlatList
               data={this.props.profiles}
               renderItem={this.renderItem}
@@ -105,9 +108,6 @@ class Home extends Component {
               ListHeaderComponent={this.renderHeader}
               keyExtractor={item => item.id}
             />
-          </View>
-          <View style={styles.screen}>
-            <Profile />
           </View>
         </Swiper>
       </SafeAreaView>
