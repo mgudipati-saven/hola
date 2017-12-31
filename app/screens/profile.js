@@ -36,13 +36,14 @@ class Profile extends Component {
   }
 
   render() {
-    const { name, picture } = this.props.user
+    const { name, picture, email } = this.props.user
 
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.profile}>
           <Avatar xlarge rounded source={{ uri: picture }} />
           <Text style={{ fontSize: 20, padding: 10 }}>{name}</Text>
+          <Text style={{ fontSize: 14, color: 'lightgray' }}>{email}</Text>
         </View>
       </SafeAreaView>
     )

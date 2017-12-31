@@ -37,28 +37,36 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    this.updateUserLocation()
+    const { uid } = this.props.user
+    this.updateUserLocation(uid)
+    this.getProfiles(uid)
+  }
+
+  getProfiles = (uid) => {
     firebase
       .database()
       .ref()
       .child('users')
-      .once('value', (snap) => {
+      .on('value', (snap) => {
+        console.log('home.getProfiles firebase on value snapshot:', snap.val())
         const profiles = []
         snap.forEach((profile) => {
-          profiles.push(profile.val())
+          if (profile.val().uid !== uid) {
+            profiles.push(profile.val())
+          }
         })
         this.props.dispatch(setProfiles(profiles))
       })
   }
 
-  updateUserLocation = async () => {
+  updateUserLocation = async (uid) => {
     const { Permissions, Location } = Expo
     const { status } = await Permissions.askAsync(Permissions.LOCATION)
     if (status === 'granted') {
       const location = await Location.getCurrentPositionAsync({ enableHighAccuracy: false })
       const { latitude, longitude } = location.coords
       const geoFireRef = new GeoFire(firebase.database().ref('geoData'))
-      geoFireRef.set(this.props.user.uid, [latitude, longitude])
+      geoFireRef.set(uid, [latitude, longitude])
     }
   }
 
@@ -73,11 +81,11 @@ class Home extends Component {
       subtitle={item.email}
       subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
       onPress={() => {
-        this.props.navigation.navigate('Chat', { user: item })
+        this.props.navigation.navigate('Chat', { user: this.props.user, profile: item })
       }}
       rightIcon={{ name: 'map' }}
       onPressRightIcon={() => {
-        this.props.navigation.navigate('Map', { user: item })
+        this.props.navigation.navigate('Map', { profile: item })
       }}
     />
   )

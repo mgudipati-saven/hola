@@ -12,12 +12,12 @@ class Map extends Component {
 
   state = {
     showSpinner: true,
-    user: this.props.navigation.state.params.user,
+    profile: this.props.navigation.state.params.profile,
     loc: [37, -122],
   }
 
   componentWillMount() {
-    const { uid } = this.state.user
+    const { uid } = this.state.profile
     this.getUserLocation(uid)
   }
 
