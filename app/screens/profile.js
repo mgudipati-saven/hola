@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, SafeAreaView } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Button, H1 } from 'native-base'
 import firebase from 'firebase'
 
 const size = 120
@@ -25,6 +24,10 @@ const styles = StyleSheet.create({
 })
 
 class Profile extends Component {
+  static navigationOptions = {
+    headerTitle: 'Profile',
+  }
+
   static propTypes = {
     user: PropTypes.object,
     navigation: PropTypes.object,

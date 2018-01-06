@@ -36,10 +36,24 @@ class Home extends Component {
     navigation: PropTypes.object,
   }
 
+  state = {
+    data: null,
+    text: '',
+  }
+
   componentWillMount() {
     const { uid } = this.props.user
     this.updateUserLocation(uid)
     this.getProfiles(uid)
+  }
+
+  onChangeText = (text) => {
+    const filtered = this.props.profiles.filter((item) => {
+      const textData = text.toUpperCase()
+      const itemData = item.name.toUpperCase()
+      return itemData.indexOf(textData) > -1
+    })
+    this.setState({ data: filtered, text })
   }
 
   getProfiles = (uid) => {
@@ -48,7 +62,6 @@ class Home extends Component {
       .ref()
       .child('users')
       .on('value', (snap) => {
-        console.log('home.getProfiles firebase on value snapshot:', snap.val())
         const profiles = []
         snap.forEach((profile) => {
           if (profile.val().uid !== uid) {
@@ -56,6 +69,7 @@ class Home extends Component {
           }
         })
         this.props.dispatch(setProfiles(profiles))
+        this.setState({ data: this.props.profiles })
       })
   }
 
@@ -102,7 +116,15 @@ class Home extends Component {
     />
   )
 
-  renderHeader = () => <SearchBar placeholder="Search..." lightTheme round />
+  renderHeader = () => (
+    <SearchBar
+      onChangeText={this.onChangeText}
+      placeholder="Search..."
+      lightTheme
+      round
+      value={this.state.text}
+    />
+  )
 
   render() {
     return (
@@ -113,7 +135,7 @@ class Home extends Component {
           </View>
           <View style={styles.screen}>
             <FlatList
-              data={this.props.profiles}
+              data={this.state.data}
               renderItem={this.renderItem}
               ItemSeparatorComponent={this.renderSeparator}
               ListHeaderComponent={this.renderHeader}
