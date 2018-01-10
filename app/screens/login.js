@@ -1,4 +1,4 @@
-import Expo from 'expo'
+import Expo, { Notifications } from 'expo'
 import React, { Component } from 'react'
 import { View, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Button, Icon, Text } from 'native-base'
@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { connectAlert } from '../components/Alert'
 
 import { setUser } from '../actions/user'
+import registerForPushNotificationsAsync from '../services/notifications'
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +34,14 @@ class Login extends Component {
 
   state = {
     showSpinner: true,
+  }
+
+  componentWillMount() {
+    // Register for Push Notifications
+    registerForPushNotificationsAsync()
+    Notifications.addListener((notification) => {
+      console.log(notification)
+    })
   }
 
   componentDidMount() {

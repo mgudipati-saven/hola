@@ -18,6 +18,7 @@ const firebaseConfig = {
 }
 firebase.initializeApp(firebaseConfig)
 
+// Setup Extended Stylesheet
 EStyleSheet.build({
   $primaryBlue: '#4F6D7A',
   $primaryOrange: '#D57A66',
