@@ -1,4 +1,5 @@
-import React from 'react'
+import Expo, { Notifications } from 'expo'
+import React, { Component } from 'react'
 import * as firebase from 'firebase'
 import { Provider } from 'react-redux'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -6,6 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import Navigator from './config/routes'
 import store from './config/store'
 import { AlertProvider } from './components/Alert'
+import registerForPushNotificationsAsync from './services/notifications'
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -32,10 +34,29 @@ EStyleSheet.build({
   $darkText: '#343434',
 })
 
-export default () => (
-  <Provider store={store}>
-    <AlertProvider>
-      <Navigator />
-    </AlertProvider>
-  </Provider>
-)
+class AppContainer extends Component {
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    })
+
+    // Register for Push Notifications
+    registerForPushNotificationsAsync()
+    Notifications.addListener((notification) => {
+      console.log('Notifications: ', notification)
+    })
+  }
+
+  render() {
+    return (
+      <Provider store={store}>
+        <AlertProvider>
+          <Navigator />
+        </AlertProvider>
+      </Provider>
+    )
+  }
+}
+
+export default AppContainer

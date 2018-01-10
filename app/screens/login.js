@@ -1,6 +1,6 @@
-import Expo, { Notifications } from 'expo'
+import Expo from 'expo'
 import React, { Component } from 'react'
-import { View, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, SafeAreaView, AsyncStorage } from 'react-native'
 import { Button, Icon, Text } from 'native-base'
 import axios from 'axios'
 import firebase from 'firebase'
@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { connectAlert } from '../components/Alert'
 
 import { setUser } from '../actions/user'
-import registerForPushNotificationsAsync from '../services/notifications'
 
 const styles = StyleSheet.create({
   container: {
@@ -34,14 +33,6 @@ class Login extends Component {
 
   state = {
     showSpinner: true,
-  }
-
-  componentWillMount() {
-    // Register for Push Notifications
-    registerForPushNotificationsAsync()
-    Notifications.addListener((notification) => {
-      console.log(notification)
-    })
   }
 
   componentDidMount() {
@@ -112,6 +103,16 @@ class Login extends Component {
           .ref('users')
           .child(uid)
           .update({ ...data, ...defaults })
+
+        // save expo push notifications token
+        const token = await AsyncStorage.getItem('PushToken')
+        if (token) {
+          firebase
+            .database()
+            .ref('pushTokens')
+            .child(uid)
+            .update({ expo: token })
+        }
       } else {
         this.cancelAuth()
       }

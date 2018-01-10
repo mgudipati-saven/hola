@@ -2,15 +2,14 @@ import { Permissions, Notifications } from 'expo'
 import { AsyncStorage } from 'react-native'
 
 export default async () => {
-  const previousToken = await AsyncStorage.getItem('PushToken')
-  console.log('getItem: ', previousToken)
-  if (previousToken) {
+  let token = await AsyncStorage.getItem('PushToken')
+  if (token) {
     return
   }
 
-  const { status: existingStatus } = await Permissions.getAsync(Permissions.REMOTE_NOTIFICATIONS)
+  const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
   let finalStatus = existingStatus
-  console.log('finalStatus: ', finalStatus)
+
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
   if (existingStatus !== 'granted') {
@@ -25,7 +24,6 @@ export default async () => {
     return
   }
 
-  const token = await Notifications.getExpoPushTokenAsync()
-  console.log('getExponentPushTokenAsync: ', token)
+  token = await Notifications.getExpoPushTokenAsync()
   await AsyncStorage.setItem('PushToken', token)
 }

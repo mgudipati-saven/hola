@@ -41,11 +41,7 @@ class Home extends Component {
     text: '',
   }
 
-  async componentWillMount() {
-    await Expo.Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-    })
+  componentDidMount() {
     const { uid } = this.props.user
     this.updateUserLocation(uid)
     this.getProfiles(uid)
