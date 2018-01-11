@@ -5,12 +5,14 @@
 
 # dependencies
 /node_modules
+utils/node_modules
 
 # misc
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+utils/serviceAccountKey.json
 
 npm-debug.log*
 yarn-debug.log*

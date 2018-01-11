@@ -1,0 +1,15 @@
+{
+  "name": "hola-admin",
+  "version": "1.0.0",
+  "description": "hola app admin tool for sending push notifications for example.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Murty Gudipati",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "firebase-admin": "^5.7.0"
+  }
+}
