@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import firebase from 'firebase'
 import GeoFire from 'geofire'
 import { connect } from 'react-redux'
-import { ListItem, SearchBar } from 'react-native-elements'
+import { ListItem, SearchBar, Avatar } from 'react-native-elements'
 
 import { setProfiles } from '../actions/user'
 import Swiper from '../components/swiper'
@@ -26,6 +26,17 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  indicator: {
+    position: 'absolute',
+    left: 30,
+    bottom: 5,
+    width: 10,
+    height: 10,
+    borderColor: 'white',
+    borderWidth: 2,
+    borderRadius: 5,
+    backgroundColor: 'blue',
+  },
 })
 
 class Home extends Component {
@@ -38,6 +49,7 @@ class Home extends Component {
 
   state = {
     data: null,
+    online: [],
     text: '',
   }
 
@@ -45,6 +57,7 @@ class Home extends Component {
     const { uid } = this.props.user
     this.updateUserLocation(uid)
     this.getProfiles(uid)
+    this.getPresence()
   }
 
   onChangeText = (text) => {
@@ -73,6 +86,27 @@ class Home extends Component {
       })
   }
 
+  getPresence = () => {
+    firebase
+      .database()
+      .ref()
+      .child('presence')
+      .on('value', (snapshot) => {
+        const uids = []
+        snapshot.forEach((user) => {
+          if (user.val() === true) {
+            // user is online
+            uids.push(user.key)
+          } else {
+            // user is offline, save last seen at?
+            console.log('Last seen at: ', user.val())
+          }
+        })
+        this.setState({ online: uids })
+        console.log('online uids: ', this.state.online)
+      })
+  }
+
   updateUserLocation = async (uid) => {
     const { Permissions, Location } = Expo
     const { status } = await Permissions.askAsync(Permissions.LOCATION)
@@ -84,25 +118,35 @@ class Home extends Component {
     }
   }
 
-  renderItem = ({ item }) => (
-    <ListItem
-      key={item.id}
-      containerStyle={{ borderBottomWidth: 0 }}
-      roundAvatar
-      avatar={{ uri: item.picture }}
-      title={item.name}
-      titleStyle={{ fontSize: 18 }}
-      subtitle={item.email}
-      subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
-      onPress={() => {
-        this.props.navigation.navigate('Chat', { user: this.props.user, profile: item })
-      }}
-      rightIcon={{ name: 'map' }}
-      onPressRightIcon={() => {
-        this.props.navigation.navigate('Map', { profile: item })
-      }}
-    />
-  )
+  renderItem = ({ item }) => {
+    console.log('renderItem online uids: ', this.state.online)
+    console.log('Item: ', item)
+    return (
+      <ListItem
+        key={item.id}
+        containerStyle={{ borderBottomWidth: 0 }}
+        avatarContainerStyle={styles.indicator}
+        roundAvatar
+        avatar={
+          <View>
+            <Avatar rounded source={item.picture && { uri: item.picture }} />
+            {this.state.online.includes(item.uid) ? <View style={styles.indicator} /> : null}
+          </View>
+        }
+        title={item.name}
+        titleStyle={{ fontSize: 18 }}
+        subtitle={item.email}
+        subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
+        onPress={() => {
+          this.props.navigation.navigate('Chat', { user: this.props.user, profile: item })
+        }}
+        rightIcon={{ name: 'map' }}
+        onPressRightIcon={() => {
+          this.props.navigation.navigate('Map', { profile: item })
+        }}
+      />
+    )
+  }
 
   renderSeparator = () => (
     <View
@@ -136,6 +180,7 @@ class Home extends Component {
           <View style={styles.screen}>
             <FlatList
               data={this.state.data}
+              extraData={this.state.online}
               renderItem={this.renderItem}
               ItemSeparatorComponent={this.renderSeparator}
               ListHeaderComponent={this.renderHeader}

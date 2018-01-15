@@ -45,6 +45,25 @@ class Login extends Component {
           if (user != null) {
             this.firebaseRef.child(auth.uid).off('value')
             this.goMain(user)
+
+            // Monitor connection state (presence)
+            const userRef = firebase
+              .database()
+              .ref('presence')
+              .child(auth.uid)
+
+            firebase
+              .database()
+              .ref('.info/connected')
+              .on('value', (snapshot) => {
+                if (snapshot.val()) {
+                  // if we lose network then, set Last seen at...
+                  userRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP)
+
+                  // set user's online status
+                  userRef.set(true)
+                }
+              })
           }
         })
       } else {
