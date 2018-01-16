@@ -21,9 +21,6 @@ export default StackNavigator(
         },
         Map: {
           screen: Map,
-          navigationOptions: {
-            title: 'User Location',
-          },
         },
         Chat: {
           screen: Chat,

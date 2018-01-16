@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase'
-import { Header, Left, Body, Right, Button, Icon, Title, Subtitle } from 'native-base'
+import { Header, Left, Body, Right, Button, Icon, Title, Subtitle, Thumbnail } from 'native-base'
 import moment from 'moment'
 
 const styles = StyleSheet.create({
@@ -23,6 +23,7 @@ export default class Chat extends Component {
           <Left>
             <Button transparent onPress={() => navigation.goBack()}>
               <Icon name="arrow-back" />
+              <Thumbnail small source={{ uri: params.profile.picture }} />
             </Button>
           </Left>
           <Body>

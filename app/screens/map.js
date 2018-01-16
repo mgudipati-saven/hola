@@ -6,6 +6,10 @@ import GeoFire from 'geofire'
 import firebase from 'firebase'
 
 class Map extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.profile.given_name}'s Last Location`,
+  })
+
   static propTypes = {
     navigation: PropTypes.object,
   }

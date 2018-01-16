@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
   },
   indicator: {
     position: 'absolute',
-    left: 30,
-    bottom: 5,
+    left: '80%',
+    bottom: '20%',
     width: 10,
     height: 10,
     borderColor: 'white',
