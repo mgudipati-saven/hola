@@ -15,9 +15,9 @@ export default StackNavigator(
       screen: StackNavigator({
         Home: {
           screen: Home,
-          navigationOptions: ({ navigation }) => ({
-            title: `${navigation.state.params.name}`,
-          }),
+          navigationOptions: {
+            title: 'Home',
+          },
         },
         Map: {
           screen: Map,
@@ -27,9 +27,6 @@ export default StackNavigator(
         },
         Chat: {
           screen: Chat,
-          navigationOptions: {
-            title: 'Chat',
-          },
         },
       }),
     },

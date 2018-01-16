@@ -97,14 +97,18 @@ class Home extends Component {
           if (user.val() === true) {
             // user is online
             uids.push(user.key)
-          } else {
-            // user is offline, save last seen at?
-            console.log('Last seen at: ', user.val())
           }
         })
         this.setState({ online: uids })
-        console.log('online uids: ', this.state.online)
       })
+  }
+
+  updateUser = (uid, key, value) => {
+    firebase
+      .database()
+      .ref('users')
+      .child(uid)
+      .update({ [key]: value })
   }
 
   updateUserLocation = async (uid) => {
@@ -118,35 +122,31 @@ class Home extends Component {
     }
   }
 
-  renderItem = ({ item }) => {
-    console.log('renderItem online uids: ', this.state.online)
-    console.log('Item: ', item)
-    return (
-      <ListItem
-        key={item.id}
-        containerStyle={{ borderBottomWidth: 0 }}
-        avatarContainerStyle={styles.indicator}
-        roundAvatar
-        avatar={
-          <View>
-            <Avatar rounded source={item.picture && { uri: item.picture }} />
-            {this.state.online.includes(item.uid) ? <View style={styles.indicator} /> : null}
-          </View>
-        }
-        title={item.name}
-        titleStyle={{ fontSize: 18 }}
-        subtitle={item.email}
-        subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
-        onPress={() => {
-          this.props.navigation.navigate('Chat', { user: this.props.user, profile: item })
-        }}
-        rightIcon={{ name: 'map' }}
-        onPressRightIcon={() => {
-          this.props.navigation.navigate('Map', { profile: item })
-        }}
-      />
-    )
-  }
+  renderItem = ({ item }) => (
+    <ListItem
+      key={item.id}
+      containerStyle={{ borderBottomWidth: 0 }}
+      avatarContainerStyle={styles.indicator}
+      roundAvatar
+      avatar={
+        <View>
+          <Avatar rounded source={item.picture && { uri: item.picture }} />
+          {this.state.online.includes(item.uid) ? <View style={styles.indicator} /> : null}
+        </View>
+      }
+      title={item.name}
+      titleStyle={{ fontSize: 18 }}
+      subtitle={item.email}
+      subtitleStyle={{ fontSize: 12, color: 'darkgrey' }}
+      onPress={() => {
+        this.props.navigation.navigate('Chat', { user: this.props.user, profile: item })
+      }}
+      rightIcon={{ name: 'map' }}
+      onPressRightIcon={() => {
+        this.props.navigation.navigate('Map', { profile: item })
+      }}
+    />
+  )
 
   renderSeparator = () => (
     <View

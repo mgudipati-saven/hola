@@ -75,7 +75,7 @@ class Login extends Component {
 
   goMain = (user) => {
     this.props.dispatch(setUser(user))
-    this.props.navigation.navigate('Main', { name: user.name })
+    this.props.navigation.navigate('Main')
   }
 
   cancelAuth = () => {
