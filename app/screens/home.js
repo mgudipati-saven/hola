@@ -10,6 +10,9 @@ import { ListItem, SearchBar, Avatar } from 'react-native-elements'
 import { setProfiles } from '../actions/user'
 import Swiper from '../components/swiper'
 import Profile from '../screens/profile'
+import withPresence from '../components/withPresence'
+
+const AvatarWithPresence = withPresence(View)
 
 const { width, height } = Dimensions.get('window')
 
@@ -126,13 +129,11 @@ class Home extends Component {
     <ListItem
       key={item.id}
       containerStyle={{ borderBottomWidth: 0 }}
-      avatarContainerStyle={styles.indicator}
       roundAvatar
       avatar={
-        <View>
+        <AvatarWithPresence isOnline={this.state.online.includes(item.uid)}>
           <Avatar rounded source={item.picture && { uri: item.picture }} />
-          {this.state.online.includes(item.uid) ? <View style={styles.indicator} /> : null}
-        </View>
+        </AvatarWithPresence>
       }
       title={item.name}
       titleStyle={{ fontSize: 18 }}
