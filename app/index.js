@@ -19,6 +19,7 @@ const firebaseConfig = {
   messagingSenderId: '74288550940',
 }
 firebase.initializeApp(firebaseConfig)
+firebase.firestore().settings({ timestampsInSnapshots: true })
 
 // Setup Extended Stylesheet
 EStyleSheet.build({

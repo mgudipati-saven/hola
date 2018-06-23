@@ -39,33 +39,37 @@ class Login extends Component {
     // firebase.auth().signOut()
     firebase.auth().onAuthStateChanged((auth) => {
       if (auth) {
-        this.firebaseRef = firebase.database().ref('users')
-        this.firebaseRef.child(auth.uid).on('value', (snap) => {
-          const user = snap.val()
-          if (user != null) {
-            this.firebaseRef.child(auth.uid).off('value')
-            this.goMain(user)
+        // firestore stuff
+        const unsubscribe = firebase
+          .firestore()
+          .collection('users')
+          .doc(auth.uid)
+          .onSnapshot((doc) => {
+            const user = doc.data()
+            if (user != null) {
+              unsubscribe()
+              this.goMain(user)
 
-            // Monitor connection state (presence)
-            const userRef = firebase
-              .database()
-              .ref('presence')
-              .child(auth.uid)
+              // Monitor connection state (presence)
+              const userRef = firebase
+                .database()
+                .ref('presence')
+                .child(auth.uid)
 
-            firebase
-              .database()
-              .ref('.info/connected')
-              .on('value', (snapshot) => {
-                if (snapshot.val()) {
-                  // if we lose network then, set Last seen at...
-                  userRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP)
+              firebase
+                .database()
+                .ref('.info/connected')
+                .on('value', (snapshot) => {
+                  if (snapshot.val()) {
+                    // if we lose network then, set Last seen at...
+                    userRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP)
 
-                  // set user's online status
-                  userRef.set(true)
-                }
-              })
-          }
-        })
+                    // set user's online status
+                    userRef.set(true)
+                  }
+                })
+            }
+          })
       } else {
         this.setState({ showSpinner: false })
         this.props.dispatch(setUser({}))
@@ -111,17 +115,16 @@ class Login extends Component {
 
         // firebase auth
         const credential = firebase.auth.GoogleAuthProvider.credential(null, accessToken)
-        const { uid } = await firebase.auth().signInWithCredential(credential)
+        const { user: { uid } } = await firebase
+          .auth()
+          .signInAndRetrieveDataWithCredential(credential)
 
-        // create firebase user
-        const defaults = {
-          uid,
-        }
+        // create firestore user
         firebase
-          .database()
-          .ref('users')
-          .child(uid)
-          .update({ ...data, ...defaults })
+          .firestore()
+          .collection('users')
+          .doc(uid)
+          .set({ ...data, uid }, { merge: true })
 
         // save expo push notifications token
         const token = await AsyncStorage.getItem('PushToken')

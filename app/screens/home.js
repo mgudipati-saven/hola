@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { View, FlatList, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import firebase from 'firebase'
+import 'firebase/firestore'
 import GeoFire from 'geofire'
 import { connect } from 'react-redux'
 import { ListItem, SearchBar, Avatar } from 'react-native-elements'
@@ -74,14 +75,13 @@ class Home extends Component {
 
   getProfiles = (uid) => {
     firebase
-      .database()
-      .ref()
-      .child('users')
-      .on('value', (snap) => {
+      .firestore()
+      .collection('users')
+      .onSnapshot((snapshot) => {
         const profiles = []
-        snap.forEach((profile) => {
-          if (profile.val().uid !== uid) {
-            profiles.push(profile.val())
+        snapshot.forEach((doc) => {
+          if (doc.id !== uid) {
+            profiles.push(doc.data())
           }
         })
         this.props.dispatch(setProfiles(profiles))
